@@ -26,3 +26,13 @@
 *.exe
 *.out
 *.app
+
+#SuperLU_5.0/*
+#!SuperLU_5.0/CBLAS
+#SuperLU_5.0/CBLAS/*
+#!SuperLU_5.0/CBLAS/CMakeLists.txt
+
+*
+!*/
+!CMakeLists.txt
+!Makefile

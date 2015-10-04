@@ -1,0 +1,52 @@
+
+IF (ARITH_PREFIX MATCHES "d")
+	SET(LU_FORTRAN
+		f77_main
+		hbcode1
+		test_omp)
+ELSEIF (ARITH_PREFIX MATCHES "z")
+	SET(LU_FORTRAN
+		z_f77_main
+		zhbcode1)
+ENDIF ()
+
+IF (ARITH_PREFIX MATCHES "d")
+	SET(LU_C
+		c_fortran_dgssv)
+ELSEIF (ARITH_PREFIX MATCHES "z")
+	SET(LU_C
+		c_fortran_zgssv)
+ENDIF ()
+
+# Fortain object files
+ADD_LIBRARY(SUPERLU_FORTRAN OBJECT
+						"${LU_FORTRAN}")
+							
+SET_TARGET_PROPERTIES(SUPERLU_FORTRAN PROPERTIES
+						LINKER_LANGUAGE FORTRAN)
+						
+# C object files
+ADD_LIBRARY(SUPERLU_C OBJECT
+						"${LU_C}")
+							
+SET_TARGET_PROPERTIES(SUPERLU_C PROPERTIES
+						LINKER_LANGUAGE C)
+						
+# link object files
+ADD_EXECUTABLE(f77_main 
+						$<TARGET_OBJECTS:SUPERLU_FORTRAN>
+						$<TARGET_OBJECTS:SUPERLU_C>)
+						
+TARGET_LINK_LIBRARIES(f77_main
+						libblas
+						libsuperlu)
+						
+IF (ARITH_PREFIX MATCHES "d")
+	ADD_EXECUTABLE(test_omp 
+							$<TARGET_OBJECTS:SUPERLU_FORTRAN>
+							$<TARGET_OBJECTS:SUPERLU_C>)
+							
+	TARGET_LINK_LIBRARIES(test_omp
+							libblas
+							libsuperlu)
+ENDIF (ARITH_PREFIX MATCHES "d")

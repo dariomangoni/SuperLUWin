@@ -1,0 +1,43 @@
+SET(LU_EXAMPLES
+		${ARITH_PREFIX}linsol 
+		${ARITH_PREFIX}linsol1
+		${ARITH_PREFIX}linsolx
+		${ARITH_PREFIX}linsolx1
+		${ARITH_PREFIX}linsolx2
+		${ARITH_PREFIX}linsolx3
+		${ARITH_PREFIX}itersol 
+		${ARITH_PREFIX}itersol1
+	)
+	
+IF (ARITH_PREFIX MATCHES "d")
+	list(APPEND LU_EXAMPLES 
+		superlu	)
+ENDIF(ARITH_PREFIX MATCHES "d")
+	
+	
+FOREACH(PROGRAM ${LU_EXAMPLES})
+        MESSAGE(STATUS "...add ${PROGRAM}")
+
+        ADD_EXECUTABLE(${PROGRAM}  "${PROGRAM}.c")
+		
+        TARGET_LINK_LIBRARIES(${PROGRAM}
+            libblas
+            libsuperlu)
+    
+ENDFOREACH()
+
+IF (ARITH_PREFIX MATCHES "s")
+	TARGET_SOURCES(sitersol PUBLIC sfgmr)
+	TARGET_SOURCES(sitersol1 PUBLIC sfgmr)
+ELSEIF (ARITH_PREFIX MATCHES "d")
+	TARGET_SOURCES(dlinsolx PUBLIC sp_ienv)
+	TARGET_SOURCES(superlu PUBLIC sp_ienv)
+	TARGET_SOURCES(ditersol PUBLIC dfgmr)
+	TARGET_SOURCES(ditersol1 PUBLIC dfgmr)
+ELSEIF (ARITH_PREFIX MATCHES "c")
+	TARGET_SOURCES(citersol PUBLIC cfgmr)
+	TARGET_SOURCES(citersol1 PUBLIC cfgmr)
+ELSEIF (ARITH_PREFIX MATCHES "z")
+	TARGET_SOURCES(zitersol PUBLIC zfgmr)
+	TARGET_SOURCES(zitersol1 PUBLIC zfgmr)
+ENDIF ()
